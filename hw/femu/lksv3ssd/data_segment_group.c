@@ -254,7 +254,7 @@ next_data_seg_group(lksv_file_iterator *iter)
     bool bottom_level = (iter->level == LSM_LEVELN - 2);
 
 #ifndef OURS
-    lksv_value_log_writer *log_w;
+    lksv_value_log_writer *log_w = NULL;
 
     if (iter->reinsert_values)
         log_w = lksv_new_value_log_writer();
