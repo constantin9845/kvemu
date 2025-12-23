@@ -420,6 +420,9 @@ uint16_t nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd, NvmeRequest *req)
 
     req->is_write = (rw->opcode == NVME_CMD_WRITE) ? 1 : 0;
 
+    femu_log("Parsing NVMe command: opcode=0x%x, slba=%lu, nlb=%u, prp1=0x%lx, prp2=0x%lx, ctrl=0x%x\n",
+             rw->opcode, slba, nlb, prp1, prp2, ctrl);
+
     err = femu_nvme_rw_check_req(n, ns, cmd, req, slba, elba, nlb, ctrl,
                                  data_size, meta_size);
     if (err)
