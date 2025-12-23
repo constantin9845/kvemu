@@ -95,9 +95,6 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
     uint64_t key_prp1, key_prp2;
     uint16_t status;
 
-    printf("[KV] pink_io_cmd : opcode: 0x%x [2]\n", cmd->opcode);
-    printf("[KV] pink_io_cmd : STORE OPCODE = 0x%x", NVME_CMD_KV_STORE);
-
     switch (cmd->opcode) {
         case NVME_CMD_READ:
         case NVME_CMD_WRITE:
