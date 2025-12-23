@@ -129,7 +129,11 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
                         key_length, key_prp1, key_prp2);
                         */
                 printf("[KV] pink_io_cmd: KV_STORE: dma_write_prp for key_buf\n");
+                printf("[KV] status before dma_write_prp for key_buf: %d\n", status);
                 status = dma_write_prp(n, req->key_buf, key_length, key_prp1, key_prp2);
+
+                printf("[KV] pink_io_cmd : status after dma_write_prp for key_buf: %d\n", status);
+
                 if (status != NVME_SUCCESS) {
                     return status;  // XXX free the resources
                 }
