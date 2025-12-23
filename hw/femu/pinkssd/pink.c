@@ -72,6 +72,7 @@ static void pink_flip(FemuCtrl *n, NvmeCmd *cmd)
 static uint16_t pink_nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
                            NvmeRequest *req)
 {
+    kv_log("[KV] pink_nvme_rw: calls nvme read/write [4]\n");
     return nvme_rw(n, ns, cmd, req);
 }
 
@@ -96,10 +97,16 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
     switch (cmd->opcode) {
         case NVME_CMD_READ:
         case NVME_CMD_WRITE:
+            kv_log("[KV] pink_io_cmd: READ/WRITE [3]\n");
             return pink_nvme_rw(n, ns, cmd, req);
+
         case NVME_CMD_KV_STORE:
+            kv_log("[KV] pink_io_cmd: KV_STORE [3]\n");
+
             value_length = le32_to_cpu(cmd->cdw10) * 4;
             key_length = (le32_to_cpu(cmd->cdw11) & 0xFF) + 1;
+            kv_log("[KV_STORE] value length: %d\n", value_length);
+
             value = g_malloc0(value_length);
             prp1 = le64_to_cpu(cmd->dptr.prp1);
             prp2 = le64_to_cpu(cmd->dptr.prp2);
@@ -150,9 +157,15 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
             req->value_length = value_length;
             req->value = value;
             return NVME_SUCCESS;
+
         case NVME_CMD_KV_RETRIEVE:
+            kv_log("[KV] pink_io_cmd: KV_RETRIEVE [3]\n");
+
             value_length = le32_to_cpu(cmd->cdw10) * 4;
             key_length = (le32_to_cpu(cmd->cdw11) & 0xFF) + 1;
+
+            kv_log("[KV_RETRIEVE] value length: %d\n", value_length);
+
             //value = g_malloc0(value_length);
             prp1 = le64_to_cpu(cmd->dptr.prp1);
             prp2 = le64_to_cpu(cmd->dptr.prp2);
@@ -194,14 +207,19 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
             //g_free(value);
             return NVME_SUCCESS;
         case NVME_CMD_KV_DELETE:
+            kv_log("[KV] pink_io_cmd: KV_DELETE [3]\n");
             return NVME_INVALID_OPCODE | NVME_DNR;
         case NVME_CMD_KV_ITERATE_REQUEST:
+            kv_log("[KV] pink_io_cmd: KV_ITERATE_REQUEST [3]\n");
             return NVME_INVALID_OPCODE | NVME_DNR;
         case NVME_CMD_KV_ITERATE_READ:
+            kv_log("[KV] pink_io_cmd: KV_ITERATE_READ [3]\n");
             return NVME_INVALID_OPCODE | NVME_DNR;
         case NVME_CMD_KV_DUMP:
+            kv_log("[KV] pink_io_cmd: KV_DUMP [3]\n");
             return NVME_SUCCESS;
         default:
+            kv_log("[KV] pink_io_cmd: UNKNOWN [3]\n");
             return NVME_INVALID_OPCODE | NVME_DNR;
     }
 }
