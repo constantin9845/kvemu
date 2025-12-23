@@ -423,7 +423,8 @@ uint16_t nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd, NvmeRequest *req)
     femu_log("Parsing NVMe command: opcode=0x%x, slba=%lu, nlb=%u, prp1=0x%lx, prp2=0x%lx, ctrl=0x%x\n",
              rw->opcode, slba, nlb, prp1, prp2, ctrl);
 
-    kv_log("nvme_rw called in nvme-io.c\n");
+    printf("called nvme_rw: opcode=0x%x, slba=%lu, nlb=%u, prp1=0x%lx, prp2=0x%lx, ctrl=0x%x\n",
+           rw->opcode, slba, nlb, prp1, prp2, ctrl);
 
     err = femu_nvme_rw_check_req(n, ns, cmd, req, slba, elba, nlb, ctrl,
                                  data_size, meta_size);
