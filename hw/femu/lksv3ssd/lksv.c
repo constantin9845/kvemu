@@ -71,7 +71,7 @@ static void lksv3_flip(FemuCtrl *n, NvmeCmd *cmd)
 static uint16_t lksv3_nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
                            NvmeRequest *req)
 {
-    kv_log("lksv3_nvme_rw called\n");
+    kv_log("lksv3_nvme_rw called in lksv.c\n");
     return nvme_rw(n, ns, cmd, req);
 }
 
