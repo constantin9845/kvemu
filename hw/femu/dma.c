@@ -29,9 +29,9 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
     bool cmb = false;
 
     if (!prp1) {
+        printf("nvme_map_prp: prp1 is NULL\n");
         return NVME_INVALID_FIELD | NVME_DNR;
-    } else if (n->cmbsz && prp1 >= n->ctrl_mem.addr &&
-               prp1 < n->ctrl_mem.addr + int128_get64(n->ctrl_mem.size)) {
+    } else if (n->cmbsz && prp1 >= n->ctrl_mem.addr && prp1 < n->ctrl_mem.addr + int128_get64(n->ctrl_mem.size)) {
         cmb = true;
         qsg->nsg = 0;
         qemu_iovec_init(iov, num_prps);
@@ -44,6 +44,7 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
     len -= trans_len;
     if (len) {
         if (!prp2) {
+            printf("nvme_map_prp: prp2 is NULL\n");
             goto unmap;
         }
         if (len > n->page_size) {
@@ -59,6 +60,7 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
 
                 if (i == n->max_prp_ents - 1 && len > n->page_size) {
                     if (!prp_ent || prp_ent & (n->page_size - 1)) {
+                        printf("nvme_map_prp: invalid prp_ent in prp list\n");
                         goto unmap;
                     }
 
@@ -71,6 +73,7 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
                 }
 
                 if (!prp_ent || prp_ent & (n->page_size - 1)) {
+                    printf("nvme_map_prp: invalid prp_ent\n");
                     goto unmap;
                 }
 
@@ -86,6 +89,7 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
             }
         } else {
             if (prp2 & (n->page_size - 1)) {
+                printf("nvme_map_prp: invalid prp2\n");
                 goto unmap;
             }
             if (!cmb) {
@@ -101,8 +105,10 @@ uint16_t nvme_map_prp(QEMUSGList *qsg, QEMUIOVector *iov, uint64_t prp1,
 
 unmap:
     if (!cmb) {
+        printf("nvme_map_prp: unmap qsg\n");
         qemu_sglist_destroy(qsg);
     } else {
+        printf("nvme_map_prp: unmap iov\n");
         qemu_iovec_destroy(iov);
     }
 
