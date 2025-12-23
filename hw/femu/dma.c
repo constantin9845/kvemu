@@ -138,22 +138,25 @@ uint16_t dma_read_prp(FemuCtrl *n, uint8_t *ptr, uint32_t len, uint64_t prp1,
                       uint64_t prp2)
 {
 
-    printf("[DMA] dma_read_prp called: len=%u, prp1=0x%lx, prp2=0x%lx\n", len, prp1, prp2);
+    femu_log("dma_read_prp called: len=%u, prp1=0x%lx, prp2=0x%lx\n", len, prp1, prp2);
 
     QEMUSGList qsg;
     QEMUIOVector iov;
     uint16_t status = NVME_SUCCESS;
 
     if (nvme_map_prp(&qsg, &iov, prp1, prp2, len, n)) {
+        femu_log("nvme_map_prp failed in dma_read_prp\n");
         return NVME_INVALID_FIELD | NVME_DNR;
     }
     if (qsg.nsg > 0) {
         if (dma_buf_read(ptr, len, NULL, &qsg, MEMTXATTRS_UNSPECIFIED)) {
+            femu_log("dma_buf_read failed in dma_read_prp\n");
             status = NVME_INVALID_FIELD | NVME_DNR;
         }
         qemu_sglist_destroy(&qsg);
     } else {
         if (qemu_iovec_to_buf(&iov, 0, ptr, len) != len) {
+            femu_log("qemu_iovec_to_buf failed in dma_read_prp\n");
             status = NVME_INVALID_FIELD | NVME_DNR;
         }
         qemu_iovec_destroy(&iov);
