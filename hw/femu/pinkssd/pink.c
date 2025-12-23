@@ -112,10 +112,8 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
             value = g_malloc0(value_length);
             prp1 = le64_to_cpu(cmd->dptr.prp1);
             prp2 = le64_to_cpu(cmd->dptr.prp2);
-            key_prp1 =
-                le32_to_cpu(cmd->cdw12) + ((uint64_t)le32_to_cpu(cmd->cdw13) << 32);
-            key_prp2 =
-                le32_to_cpu(cmd->cdw14) + ((uint64_t)le32_to_cpu(cmd->cdw15) << 32);
+            key_prp1 = le32_to_cpu(cmd->cdw12) + ((uint64_t)le32_to_cpu(cmd->cdw13) << 32);
+            key_prp2 = le32_to_cpu(cmd->cdw14) + ((uint64_t)le32_to_cpu(cmd->cdw15) << 32);
             status = NVME_SUCCESS;
 
             if (key_length <= 16) {

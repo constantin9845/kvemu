@@ -32,9 +32,11 @@ void kv_lsm_setup_db(const struct kv_lsm_operations **lops, enum lsm_type type)
 {
     switch (type) {
         case PINK:
+            femu_debug("KV-LSM: Using PinK-SSD LSM implementation.\n");
             *lops = &pink_lsm_operations;
             break;
         case LKSV:
+            femu_debug("KV-LSM: Using LKSV3-SSD LSM implementation.\n");
             *lops = &lksv_lsm_operations;
             break;
         default:
