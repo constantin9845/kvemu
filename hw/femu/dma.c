@@ -137,6 +137,9 @@ uint16_t dma_write_prp(FemuCtrl *n, uint8_t *ptr, uint32_t len, uint64_t prp1,
 uint16_t dma_read_prp(FemuCtrl *n, uint8_t *ptr, uint32_t len, uint64_t prp1,
                       uint64_t prp2)
 {
+
+    printf("[DMA] dma_read_prp called: len=%u, prp1=0x%lx, prp2=0x%lx\n", len, prp1, prp2);
+
     QEMUSGList qsg;
     QEMUIOVector iov;
     uint16_t status = NVME_SUCCESS;
