@@ -96,7 +96,7 @@ static uint16_t lksv3_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
     switch (cmd->opcode) {
         case NVME_CMD_READ:
         case NVME_CMD_WRITE:
-            kv_log("[KV] lksv3_io_cmd: KV_READ/WRITE [3]\n");
+            kv_log("[KV] lksv3_io_cmd: READ/WRITE [3]\n");
             return lksv3_nvme_rw(n, ns, cmd, req);
         case NVME_CMD_KV_STORE:
             kv_log("[KV] lksv3_io_cmd: KV_STORE [3]\n");
@@ -217,6 +217,7 @@ static uint16_t lksv3_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
             kv_log("[KV] lksv3_io_cmd: KV_DUMP [3]\n");
             return NVME_SUCCESS;
         default:
+            kv_log("[KV] lksv3_io_cmd: UNKNOWN [3]\n");
             return NVME_INVALID_OPCODE | NVME_DNR;
     }
 }
