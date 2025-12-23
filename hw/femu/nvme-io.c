@@ -420,7 +420,12 @@ uint16_t nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd, NvmeRequest *req)
 
     req->is_write = (rw->opcode == NVME_CMD_WRITE) ? 1 : 0;
 
-    printf("[FEMU : nvme-io.c] called nvme_rw: [4]\n");
+    if(req->is_write) {
+        printf("[FEMU] nvme_rw: WRITE  [5]\n");
+    } else {
+        printf("[FEMU] nvme_rw: READ   [5]\n");
+    }
+    
 
     err = femu_nvme_rw_check_req(n, ns, cmd, req, slba, elba, nlb, ctrl,
                                  data_size, meta_size);
@@ -440,6 +445,7 @@ uint16_t nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd, NvmeRequest *req)
     req->nlb = nlb;
 
     ret = n->be_ops.rw(n->be, &req->qsg, &data_offset, req->is_write);
+    printf("[FEMU] ret: %d [6]\n", ret);
     if (!ret) {
         return NVME_SUCCESS;
     }
@@ -590,36 +596,55 @@ static uint16_t nvme_io_cmd(FemuCtrl *n, NvmeCmd *cmd, NvmeRequest *req)
 
     req->ns = ns = &n->namespaces[nsid - 1];
 
-    femu_log("[FEMU] nvme_io_cmd: [1]");
+    femu_log("**************************\n");
+    femu_log("[FEMU] START : nvme_io_cmd: [1]\n");
 
     switch (cmd->opcode) {
     case NVME_CMD_FLUSH:
+
         if (!n->id_ctrl.vwc || !n->features.volatile_wc) {
             return NVME_SUCCESS;
         }
+
+        femu_log("[FEMU] nvme_io_cmd: [2] NVME_CMD_FLUSH\n");
         return nvme_flush(n, ns, cmd, req);
+
     case NVME_CMD_DSM:
+
         if (NVME_ONCS_DSM & n->oncs) {
+            femu_log("[FEMU] nvme_io_cmd: [2] NVME_CMD_DSM\n"); // data set management
             return nvme_dsm(n, ns, cmd, req);
         }
         return NVME_INVALID_OPCODE | NVME_DNR;
+
     case NVME_CMD_COMPARE:
+
         if (NVME_ONCS_COMPARE & n->oncs) {
+            femu_log("[FEMU] nvme_io_cmd: [2] NVME_CMD_COMPARE\n"); // read data from device and compare with host data
             return nvme_compare(n, ns, cmd, req);
         }
         return NVME_INVALID_OPCODE | NVME_DNR;
+
     case NVME_CMD_WRITE_ZEROES:
+
         if (NVME_ONCS_WRITE_ZEROS & n->oncs) {
-            return nvme_write_zeros(n, ns, cmd, req);
+            femu_log("[FEMU] nvme_io_cmd: [2] NVME_CMD_WRITE_ZEROES\n"); 
+            return nvme_write_zeros(n, ns, cmd, req); // write zeroes to device
         }
         return NVME_INVALID_OPCODE | NVME_DNR;
+
     case NVME_CMD_WRITE_UNCOR:
+
         if (NVME_ONCS_WRITE_UNCORR & n->oncs) {
-            return nvme_write_uncor(n, ns, cmd, req);
+            femu_log("[FEMU] nvme_io_cmd: [2] NVME_CMD_WRITE_UNCOR\n");
+            return nvme_write_uncor(n, ns, cmd, req); // write uncorrectable data to device -->marks blocks invalid --> can only read agaain after writing new data
         }
         return NVME_INVALID_OPCODE | NVME_DNR;
+
     default:
+
         if (n->ext_ops.io_cmd) {
+            femu_log("[FEMU] nvme_io_cmd: [2] EXT IO CMD\n");
             return n->ext_ops.io_cmd(n, ns, cmd, req);
         }
 
