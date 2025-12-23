@@ -107,6 +107,7 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
             value_length = le32_to_cpu(cmd->cdw10) * 4;
             key_length = (le32_to_cpu(cmd->cdw11) & 0xFF) + 1;
             kv_log("[KV_STORE] value length: %d\n", value_length);
+            kv_log("[KV_STORE] key length: %d\n", key_length);
 
             value = g_malloc0(value_length);
             prp1 = le64_to_cpu(cmd->dptr.prp1);
