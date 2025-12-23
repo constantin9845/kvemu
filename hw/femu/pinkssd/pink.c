@@ -72,7 +72,7 @@ static void pink_flip(FemuCtrl *n, NvmeCmd *cmd)
 static uint16_t pink_nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
                            NvmeRequest *req)
 {
-    kv_log("[KV] pink_nvme_rw: calls nvme read/write [4]\n");
+    kv_log("[KV] pink_nvme_rw: calls pink_nvme_rw [4]\n");
     return nvme_rw(n, ns, cmd, req);
 }
 
@@ -94,6 +94,10 @@ static uint16_t pink_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
     uint64_t prp1, prp2;
     uint64_t key_prp1, key_prp2;
     uint16_t status;
+
+    printf("[KV] pink_io_cmd : opcode: 0x%x [2]\n", cmd->opcode);
+    printf("[KV] pink_io_cmd : STORE OPCODE = 0x%x", NVME_CMD_KV_STORE);
+
     switch (cmd->opcode) {
         case NVME_CMD_READ:
         case NVME_CMD_WRITE:
