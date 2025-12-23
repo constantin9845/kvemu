@@ -71,7 +71,7 @@ static void lksv3_flip(FemuCtrl *n, NvmeCmd *cmd)
 static uint16_t lksv3_nvme_rw(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
                            NvmeRequest *req)
 {
-    kv_log("lksv3_nvme_rw called in lksv.c\n");
+    kv_log("lksv3_nvme_rw called in lksv.c [3]\n");
     return nvme_rw(n, ns, cmd, req);
 }
 
@@ -96,6 +96,7 @@ static uint16_t lksv3_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
     switch (cmd->opcode) {
         case NVME_CMD_READ:
         case NVME_CMD_WRITE:
+            kv_log("lksv3_nvme_rw called in lksv.c [2]\n");
             return lksv3_nvme_rw(n, ns, cmd, req);
         case NVME_CMD_KV_STORE:
             value_length = le32_to_cpu(cmd->cdw10) * 4;
