@@ -30,9 +30,10 @@ static inline int kv_cmp_key(kv_key a, kv_key b)
 {
     if (!a.len && !b.len) return 0;
     else if (a.len == 0) return -1;
-    else if (b.len == 0) return 1;
+    else if (b.len == 0) return 1; // 
 
     int r = memcmp(a.key, b.key, a.len > b.len ? b.len : a.len);
+    // If keys are equal up to the shorter length or not equal, 
     if (r != 0 || a.len == b.len) {
         return r;
     }

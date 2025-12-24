@@ -629,7 +629,7 @@ kv_value *
 internal_get(int eid, kv_key k1, uint32_t hash, NvmeRequest *req)
 {
     kv_value *v = NULL;
-    lksv_level_list_entry *e = lksv_lget(eid);
+    lksv_level_list_entry *e = lksv_lget(eid); 
 
     int i;
     uint16_t shifted_hash = hash >> LEVELLIST_HASH_SHIFTS;
@@ -642,7 +642,7 @@ internal_get(int eid, kv_key k1, uint32_t hash, NvmeRequest *req)
     struct femu_ppa ppa;
     struct nand_page *pg;
 
-retry:
+retry: 
 
     ppa = get_next_write_ppa(e->ppa, i);
     pg = lksv3_get_pg(&ppa);

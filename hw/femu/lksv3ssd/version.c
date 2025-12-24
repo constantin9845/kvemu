@@ -216,19 +216,21 @@ key_may_exist(lksv_level_list_entry *e, uint32_t hash)
     return false;
 }
 
+
 kv_value *
 lksv_get(kv_key k, NvmeRequest *req)
 {
     kv_value *v = NULL;
-    uint32_t hash = XXH32(k.key, k.len, 0);
+    uint32_t hash = XXH32(k.key, k.len, 0); 
 
     for (int i = 0; i < LSM_LEVELN; i++)
     {
-        if (lksv_lsm->versions.n_files[i] == 0)
+        if (lksv_lsm->versions.n_files[i] == 0) // check
             continue;
 
-        int idx = binary_search(i, k, req);
+        int idx = binary_search(i, k, req); // find first file whose largest key >= k
 
+        
         if (idx == lksv_lsm->versions.n_files[i])
             continue;
 

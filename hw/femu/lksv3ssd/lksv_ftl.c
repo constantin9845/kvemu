@@ -421,6 +421,7 @@ void lksv3ssd_init(FemuCtrl *n) {
     lksv_lsm_setup_cache_size(lopts);
     /////////////////////
     kv_lsm_setup_db(&lksv_ssd->lops, LKSV);
+
     lksv_ssd->lops->open(lopts);
 
     qemu_thread_create(&lksv_ssd->ftl_thread, "FEMU-FTL-Thread", ftl_thread, n, QEMU_THREAD_JOINABLE);
@@ -768,7 +769,7 @@ find_from_list(kv_key key, kv_skiplist *skl, NvmeRequest *req)
     v = (kv_value *) malloc(sizeof(kv_value));
     if (n->private)
     {
-        d.ppa = *snode_ppa(n);
+        d.ppa = *snode_ppa(n); 
         d.value_log_offset = *snode_off(n);
         d.hash = *snode_hash(n);
 

@@ -132,19 +132,22 @@ static inline int get_level(void)
     return level;
 }
 
+
 kv_snode *kv_skiplist_insert(kv_skiplist *list, kv_key key, kv_value* value)
 {
     pthread_spin_lock(&list->lock);
 
     kv_snode *update[MAX_L+1];
     kv_snode *x=list->header;
-
+     
+    
     for(int i=list->level; i>=1; i--){
         while(kv_cmp_key(x->list[i]->key,key)<0)
             x=x->list[i];
         update[i]=x;
     }
-    x=x->list[1];
+    x=x->list[1]; 
+    
     if(kv_test_key(key,x->key)) {
         list->val_size -= x->value->length;
         list->val_size += value->length;
@@ -202,6 +205,7 @@ void kv_skiplist_get_start_end_key(kv_skiplist *sl, kv_key *start, kv_key *end)
 
     pthread_spin_unlock(&sl->lock);
 }
+
 
 kv_skiplist *kv_skiplist_divide(kv_skiplist *in, kv_snode *target, int num, int key_size, int val_size) {
     pthread_spin_lock(&in->lock);
