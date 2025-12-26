@@ -87,6 +87,7 @@ static uint16_t lksv3_io_cmd(FemuCtrl *n, NvmeNamespace *ns, NvmeCmd *cmd,
       le32_to_cpu(cmd->cdw10), le32_to_cpu(cmd->cdw11), le32_to_cpu(cmd->cdw12),
       le32_to_cpu(cmd->cdw13), le32_to_cpu(cmd->cdw14),
       le32_to_cpu(cmd->cdw15));*/
+    printf("[KV] lksv3_io_cmd: opcode=0x%x [99]\n", cmd->opcode);
     uint32_t value_length;
     uint32_t key_length;
     uint8_t *value;
