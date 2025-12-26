@@ -769,6 +769,7 @@ find_from_list(kv_key key, kv_skiplist *skl, NvmeRequest *req)
     v = (kv_value *) malloc(sizeof(kv_value));
     if (n->private)
     {
+        printf("SSD key is from a node already in flash\n");
         d.ppa = *snode_ppa(n); 
         d.value_log_offset = *snode_off(n);
         d.hash = *snode_hash(n);
@@ -787,6 +788,7 @@ find_from_list(kv_key key, kv_skiplist *skl, NvmeRequest *req)
     }
     else
     {
+        printf("SSD key is from a node still in DRAM\n");
         v->length = n->value->length;
         v->value = (char *) malloc(v->length);
         memcpy(v->value, n->value->value, v->length);
@@ -824,6 +826,7 @@ static uint64_t ssd_retrieve(NvmeRequest *req)
     k.len = req->key_length;
 
     v = find_from_list(k, mem, req);
+    printf("Searching in mutable skiplist\n");
     if (v) {
         req->value_length = v->length;
         req->value = (uint8_t *) v->value;
@@ -838,6 +841,7 @@ static uint64_t ssd_retrieve(NvmeRequest *req)
     kv_skiplist_put(mem);
 
     v = find_from_list(k, imm, req);
+    printf("Searching in immutable skiplist\n");
     if (v) {
         req->value_length = v->length;
         req->value = (uint8_t *) v->value;
@@ -851,6 +855,7 @@ static uint64_t ssd_retrieve(NvmeRequest *req)
     kv_skiplist_put(imm);
 
     v = find_from_list(k, key_only_mem, req);
+    printf("Searching in mutable meta segment.\n");
     if (v) {
         req->value_length = v->length;
         req->value = (uint8_t *) v->value;
@@ -863,6 +868,7 @@ static uint64_t ssd_retrieve(NvmeRequest *req)
     kv_skiplist_put(key_only_mem);
 
     v = find_from_list(k, key_only_imm, req);
+    printf("Searching in immutable meta segment.\n");
     if (v) {
         req->value_length = v->length;
         req->value = (uint8_t *) v->value;
@@ -874,7 +880,7 @@ static uint64_t ssd_retrieve(NvmeRequest *req)
     kv_skiplist_put(key_only_imm);
 
     qemu_mutex_lock(&lksv_lsm->mu);
-    v = lksv_get(k, req);
+    v = lksv_get(k, req); 
     qemu_mutex_unlock(&lksv_lsm->mu);
     if (v) {
         req->value_length = v->length;

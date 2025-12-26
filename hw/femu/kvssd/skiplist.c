@@ -104,7 +104,7 @@ kv_snode *kv_skiplist_find(kv_skiplist *list, kv_key key)
 
     x = list->header;
     for (i = list->level; i >= 1; i--) {
-        while (kv_cmp_key(x->list[i]->key, key) < 0)
+        while (kv_cmp_key(x->list[i]->key, key) < 0) // while target key > key in list --> move forward
             x = x->list[i];
     }
 
